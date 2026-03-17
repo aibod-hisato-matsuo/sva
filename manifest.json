@@ -1,0 +1,17 @@
+{
+  "package": "HEMS SVA Starter Pack",
+  "version": "0.1.0",
+  "contents": {
+    "schemas": [
+      "spec-generation-guardrail.schema.json"
+    ],
+    "instances": [
+      "ipower-engine.spec-generation-guardrail.instance.json"
+    ],
+    "scripts": [
+      "generate_specs_from_guardrail.py",
+      "run_all.py"
+    ],
+    "example_output": []
+  }
+}
