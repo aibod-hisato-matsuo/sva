@@ -1,0 +1,248 @@
+{
+  "document_info": {
+    "project_name": "i-Power Engine",
+    "version": "0.1.0",
+    "language": "ja",
+    "status": "draft",
+    "last_updated": "2026-03-17"
+  },
+  "capability_groups": [
+    {
+      "group_id": "cg_001",
+      "target_type": "smart_meter",
+      "name": "スマートメーター Capability",
+      "description": "Bルート経由で買電・売電・一部瞬時値を取得する。",
+      "capabilities": [
+        {
+          "capability_id": "cap_sm_001",
+          "name": "買電電力取得",
+          "category": "measurement",
+          "availability": "required",
+          "description": "瞬時買電電力を取得する。",
+          "related_measurement_ids": [
+            "m_001"
+          ],
+          "protocols": [
+            "wi-sun-b-route"
+          ],
+          "update_cycle": "near-real-time",
+          "constraints": [
+            "取得粒度はメーター仕様に依存する"
+          ]
+        },
+        {
+          "capability_id": "cap_sm_002",
+          "name": "売電電力取得",
+          "category": "measurement",
+          "availability": "required",
+          "description": "瞬時売電電力を取得する。",
+          "related_measurement_ids": [
+            "m_002"
+          ],
+          "protocols": [
+            "wi-sun-b-route"
+          ],
+          "update_cycle": "near-real-time",
+          "constraints": [
+            "取得粒度はメーター仕様に依存する"
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "cg_002",
+      "target_type": "battery_system",
+      "name": "蓄電池 Capability",
+      "description": "ECHONET Liteで蓄電池状態を取得し、一部制御を行う。",
+      "capabilities": [
+        {
+          "capability_id": "cap_bt_001",
+          "name": "SOC取得",
+          "category": "measurement",
+          "availability": "required",
+          "description": "蓄電池残量を取得する。",
+          "related_measurement_ids": [
+            "m_004"
+          ],
+          "protocols": [
+            "echonet-lite"
+          ],
+          "update_cycle": "1-5min"
+        },
+        {
+          "capability_id": "cap_bt_002",
+          "name": "充放電電力取得",
+          "category": "measurement",
+          "availability": "preferred",
+          "description": "充放電電力を取得する。",
+          "related_measurement_ids": [
+            "m_005"
+          ],
+          "protocols": [
+            "echonet-lite"
+          ],
+          "update_cycle": "1-5min",
+          "constraints": [
+            "メーカー差異により取得不可の場合がある"
+          ]
+        },
+        {
+          "capability_id": "cap_bt_003",
+          "name": "備え優先制御",
+          "category": "control",
+          "availability": "preferred",
+          "description": "放電抑制やSOC下限制御を行う。",
+          "related_command_ids": [
+            "cmd_battery_reserve_mode"
+          ],
+          "protocols": [
+            "echonet-lite"
+          ],
+          "constraints": [
+            "メーカーによって制御可能範囲が異なる"
+          ],
+          "failure_behavior": "制御不可時は提案表示へフォールバックする"
+        }
+      ]
+    },
+    {
+      "group_id": "cg_003",
+      "target_type": "hems_controller",
+      "name": "HEMSコントローラ Capability",
+      "description": "機器接続・差異吸収・ローカル安全動作を担う。",
+      "capabilities": [
+        {
+          "capability_id": "cap_edge_001",
+          "name": "プロトコル吸収",
+          "category": "communication",
+          "availability": "required",
+          "description": "Wi-SUN/ECHONET Lite の差異を吸収する。",
+          "protocols": [
+            "wi-sun-b-route",
+            "echonet-lite"
+          ],
+          "constraints": [
+            "メーカー固有差分はアダプタで管理する"
+          ]
+        },
+        {
+          "capability_id": "cap_edge_002",
+          "name": "ローカル安全縮退",
+          "category": "diagnostics",
+          "availability": "required",
+          "description": "通信断時に安全側動作へ移行する。",
+          "failure_behavior": "最後の安全設定を保持し、危険側制御を停止する"
+        },
+        {
+          "capability_id": "cap_edge_003",
+          "name": "OTA更新",
+          "category": "ota",
+          "availability": "preferred",
+          "description": "ファームウェア更新を受け付ける。",
+          "constraints": [
+            "失敗時ロールバックが必要"
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "cg_004",
+      "target_type": "cloud",
+      "name": "クラウド Capability",
+      "description": "蓄積・集計・提案生成・通知連携を担う。",
+      "capabilities": [
+        {
+          "capability_id": "cap_cloud_001",
+          "name": "時系列蓄積",
+          "category": "storage",
+          "availability": "required",
+          "description": "取得データを時系列で保存する。",
+          "related_measurement_ids": [
+            "m_001",
+            "m_002",
+            "m_003",
+            "m_004",
+            "m_005"
+          ]
+        },
+        {
+          "capability_id": "cap_cloud_002",
+          "name": "提案生成",
+          "category": "analytics",
+          "availability": "required",
+          "description": "節約や備えに関する提案を生成する。",
+          "constraints": [
+            "提案根拠を説明可能にする"
+          ]
+        },
+        {
+          "capability_id": "cap_cloud_003",
+          "name": "通知配信",
+          "category": "communication",
+          "availability": "preferred",
+          "description": "提案や異常をユーザーへ通知する。"
+        }
+      ]
+    },
+    {
+      "group_id": "cg_005",
+      "target_type": "user_app",
+      "name": "家庭内アプリ Capability",
+      "description": "可視化・設定・承認を担う。",
+      "capabilities": [
+        {
+          "capability_id": "cap_app_001",
+          "name": "ダッシュボード表示",
+          "category": "ui",
+          "availability": "required",
+          "description": "現在値と履歴を表示する。",
+          "related_measurement_ids": [
+            "m_001",
+            "m_002",
+            "m_003",
+            "m_004",
+            "m_005",
+            "m_006",
+            "m_007"
+          ]
+        },
+        {
+          "capability_id": "cap_app_002",
+          "name": "モード設定",
+          "category": "ui",
+          "availability": "required",
+          "description": "見える化・提案・自動実行などのモードを設定する."
+        },
+        {
+          "capability_id": "cap_app_003",
+          "name": "提案承認",
+          "category": "ui",
+          "availability": "preferred",
+          "description": "提案の採用可否をユーザーが選択する。"
+        }
+      ]
+    },
+    {
+      "group_id": "cg_006",
+      "target_type": "admin_app",
+      "name": "管理者アプリ Capability",
+      "description": "運用監視・障害把握・サポート補助を担う。",
+      "capabilities": [
+        {
+          "capability_id": "cap_admin_001",
+          "name": "接続監視",
+          "category": "diagnostics",
+          "availability": "required",
+          "description": "端末・クラウド・機器の接続状態を監視する。"
+        },
+        {
+          "capability_id": "cap_admin_002",
+          "name": "障害分類表示",
+          "category": "ui",
+          "availability": "required",
+          "description": "障害の種類と影響範囲を表示する。"
+        }
+      ]
+    }
+  ]
+}

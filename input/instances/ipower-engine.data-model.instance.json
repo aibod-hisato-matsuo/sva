@@ -1,0 +1,381 @@
+{
+  "document_info": {
+    "project_name": "i-Power Engine",
+    "version": "0.1.0",
+    "language": "ja",
+    "status": "draft",
+    "last_updated": "2026-03-17"
+  },
+  "entities": [
+    {
+      "entity_id": "ent_001",
+      "name": "measurement_record",
+      "category": "measurement",
+      "description": "計測値および推定値の共通レコード。",
+      "fields": [
+        {
+          "field_name": "measurement_id",
+          "data_type": "string",
+          "required": true,
+          "description": "計測項目ID",
+          "example": "m_004",
+          "source_type": "system"
+        },
+        {
+          "field_name": "timestamp",
+          "data_type": "datetime",
+          "required": true,
+          "description": "計測時刻",
+          "source_type": "system"
+        },
+        {
+          "field_name": "value",
+          "data_type": "number",
+          "required": true,
+          "description": "値",
+          "example": 78.4,
+          "source_type": "measured"
+        },
+        {
+          "field_name": "unit",
+          "data_type": "string",
+          "required": true,
+          "description": "単位",
+          "example": "%",
+          "source_type": "system"
+        },
+        {
+          "field_name": "source_type",
+          "data_type": "string",
+          "required": true,
+          "description": "実測/推定など",
+          "enum_values": [
+            "measured",
+            "estimated",
+            "user_input",
+            "external_api",
+            "derived"
+          ],
+          "source_type": "system"
+        },
+        {
+          "field_name": "quality_flag",
+          "data_type": "string",
+          "required": false,
+          "description": "品質フラグ",
+          "enum_values": [
+            "ok",
+            "estimated",
+            "missing",
+            "stale"
+          ],
+          "source_type": "system"
+        }
+      ]
+    },
+    {
+      "entity_id": "ent_002",
+      "name": "event_record",
+      "category": "event",
+      "description": "停電・通信断・機器異常などのイベント。",
+      "fields": [
+        {
+          "field_name": "event_id",
+          "data_type": "string",
+          "required": true,
+          "description": "イベントID",
+          "example": "e_003",
+          "source_type": "system"
+        },
+        {
+          "field_name": "occurred_at",
+          "data_type": "datetime",
+          "required": true,
+          "description": "発生時刻",
+          "source_type": "system"
+        },
+        {
+          "field_name": "severity",
+          "data_type": "string",
+          "required": true,
+          "description": "重大度",
+          "enum_values": [
+            "info",
+            "warning",
+            "critical"
+          ],
+          "source_type": "system"
+        },
+        {
+          "field_name": "message",
+          "data_type": "string",
+          "required": true,
+          "description": "表示メッセージ",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "entity_id": "ent_003",
+      "name": "control_command",
+      "category": "command",
+      "description": "クラウドまたは端末が扱う制御コマンド。",
+      "fields": [
+        {
+          "field_name": "command_id",
+          "data_type": "string",
+          "required": true,
+          "description": "コマンドID",
+          "example": "cmd_battery_reserve_mode",
+          "source_type": "system"
+        },
+        {
+          "field_name": "target_device",
+          "data_type": "string",
+          "required": true,
+          "description": "対象デバイス",
+          "example": "battery_system",
+          "source_type": "system"
+        },
+        {
+          "field_name": "parameters",
+          "data_type": "object",
+          "required": false,
+          "description": "制御パラメータ",
+          "source_type": "user_input"
+        },
+        {
+          "field_name": "approved_by_user",
+          "data_type": "boolean",
+          "required": false,
+          "description": "ユーザー承認有無",
+          "source_type": "system"
+        }
+      ]
+    },
+    {
+      "entity_id": "ent_004",
+      "name": "user_policy",
+      "category": "policy",
+      "description": "ユーザーが選択した運用方針。",
+      "fields": [
+        {
+          "field_name": "policy_id",
+          "data_type": "string",
+          "required": true,
+          "description": "方針ID",
+          "example": "mode_recommend",
+          "source_type": "system"
+        },
+        {
+          "field_name": "mode_name",
+          "data_type": "string",
+          "required": true,
+          "description": "方針名",
+          "source_type": "user_input"
+        },
+        {
+          "field_name": "effective_from",
+          "data_type": "datetime",
+          "required": false,
+          "description": "適用開始時刻",
+          "source_type": "system"
+        },
+        {
+          "field_name": "user_note",
+          "data_type": "string",
+          "required": false,
+          "description": "ユーザーメモ",
+          "source_type": "user_input"
+        }
+      ]
+    },
+    {
+      "entity_id": "ent_005",
+      "name": "alert_notification",
+      "category": "alert",
+      "description": "ユーザーまたは管理者向け通知。",
+      "fields": [
+        {
+          "field_name": "alert_id",
+          "data_type": "string",
+          "required": true,
+          "description": "通知ID",
+          "source_type": "system"
+        },
+        {
+          "field_name": "channel",
+          "data_type": "string",
+          "required": true,
+          "description": "通知チャネル",
+          "enum_values": [
+            "in_app",
+            "push",
+            "email"
+          ],
+          "source_type": "system"
+        },
+        {
+          "field_name": "title",
+          "data_type": "string",
+          "required": true,
+          "description": "通知タイトル",
+          "source_type": "derived"
+        },
+        {
+          "field_name": "body",
+          "data_type": "string",
+          "required": true,
+          "description": "通知本文",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "entity_id": "ent_006",
+      "name": "device_state",
+      "category": "device_state",
+      "description": "HEMS端末または接続機器の状態。",
+      "fields": [
+        {
+          "field_name": "device_id",
+          "data_type": "string",
+          "required": true,
+          "description": "デバイスID",
+          "source_type": "system"
+        },
+        {
+          "field_name": "status",
+          "data_type": "string",
+          "required": true,
+          "description": "状態",
+          "enum_values": [
+            "normal",
+            "degraded",
+            "offline",
+            "fault"
+          ],
+          "source_type": "system"
+        },
+        {
+          "field_name": "last_seen_at",
+          "data_type": "datetime",
+          "required": false,
+          "description": "最終観測時刻",
+          "source_type": "system"
+        }
+      ]
+    },
+    {
+      "entity_id": "ent_007",
+      "name": "sync_status",
+      "category": "sync_status",
+      "description": "エッジとクラウドの同期状態。",
+      "fields": [
+        {
+          "field_name": "sync_id",
+          "data_type": "string",
+          "required": true,
+          "description": "同期ID",
+          "source_type": "system"
+        },
+        {
+          "field_name": "last_sync_at",
+          "data_type": "datetime",
+          "required": true,
+          "description": "最終同期時刻",
+          "source_type": "system"
+        },
+        {
+          "field_name": "sync_result",
+          "data_type": "string",
+          "required": true,
+          "description": "同期結果",
+          "enum_values": [
+            "success",
+            "partial",
+            "failed"
+          ],
+          "source_type": "system"
+        }
+      ]
+    },
+    {
+      "entity_id": "ent_008",
+      "name": "audit_log",
+      "category": "audit_log",
+      "description": "重要操作の監査ログ。",
+      "fields": [
+        {
+          "field_name": "log_id",
+          "data_type": "string",
+          "required": true,
+          "description": "ログID",
+          "source_type": "system"
+        },
+        {
+          "field_name": "actor_type",
+          "data_type": "string",
+          "required": true,
+          "description": "操作者種別",
+          "enum_values": [
+            "user",
+            "admin",
+            "system"
+          ],
+          "source_type": "system"
+        },
+        {
+          "field_name": "action",
+          "data_type": "string",
+          "required": true,
+          "description": "実行操作",
+          "source_type": "system"
+        },
+        {
+          "field_name": "action_at",
+          "data_type": "datetime",
+          "required": true,
+          "description": "操作時刻",
+          "source_type": "system"
+        }
+      ]
+    },
+    {
+      "entity_id": "ent_009",
+      "name": "derived_metric",
+      "category": "derived_metric",
+      "description": "日次費用やCO2削減量などの派生指標。",
+      "fields": [
+        {
+          "field_name": "metric_id",
+          "data_type": "string",
+          "required": true,
+          "description": "指標ID",
+          "source_type": "system"
+        },
+        {
+          "field_name": "metric_name",
+          "data_type": "string",
+          "required": true,
+          "description": "指標名",
+          "source_type": "system"
+        },
+        {
+          "field_name": "value",
+          "data_type": "number",
+          "required": true,
+          "description": "指標値",
+          "source_type": "derived"
+        },
+        {
+          "field_name": "calculation_basis",
+          "data_type": "string",
+          "required": false,
+          "description": "算出根拠",
+          "source_type": "derived"
+        }
+      ]
+    }
+  ]
+}

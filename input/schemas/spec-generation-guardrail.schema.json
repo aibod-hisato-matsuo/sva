@@ -1,0 +1,354 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aibod.example/schemas/spec-generation-guardrail.schema.json",
+  "title": "Specification Generation Guardrail Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_info",
+    "global_rules",
+    "spec_documents"
+  ],
+  "properties": {
+    "document_info": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_name",
+        "version",
+        "language"
+      ],
+      "properties": {
+        "project_name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "ja",
+            "en"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "approved",
+            "archived"
+          ]
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "global_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_source_documents",
+        "inference_policy",
+        "tbd_policy",
+        "traceability_policy"
+      ],
+      "properties": {
+        "allowed_source_documents": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "01_overview",
+              "02_sva_layers",
+              "03_vertical_slices",
+              "04_responsibility_boundaries",
+              "05_common_data_model",
+              "06_usecases",
+              "07_nfr_and_risks",
+              "08_open_items",
+              "09_capability_model",
+              "10_data_model",
+              "11_document_output_model"
+            ]
+          }
+        },
+        "inference_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "allow_section_structure_inference",
+            "allow_wording_normalization",
+            "allow_minor_editorial_completion",
+            "forbid_undefined_function_invention",
+            "forbid_undefined_hw_detail_invention",
+            "forbid_undefined_api_detail_invention"
+          ],
+          "properties": {
+            "allow_section_structure_inference": {
+              "type": "boolean"
+            },
+            "allow_wording_normalization": {
+              "type": "boolean"
+            },
+            "allow_minor_editorial_completion": {
+              "type": "boolean"
+            },
+            "forbid_undefined_function_invention": {
+              "type": "boolean"
+            },
+            "forbid_undefined_hw_detail_invention": {
+              "type": "boolean"
+            },
+            "forbid_undefined_api_detail_invention": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "tbd_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "use_tbd_marker_for_missing_information",
+            "collect_open_items_from_sources",
+            "do_not_guess_missing_values"
+          ],
+          "properties": {
+            "use_tbd_marker_for_missing_information": {
+              "type": "boolean"
+            },
+            "collect_open_items_from_sources": {
+              "type": "boolean"
+            },
+            "do_not_guess_missing_values": {
+              "type": "boolean"
+            },
+            "tbd_marker": {
+              "type": "string"
+            }
+          }
+        },
+        "traceability_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "require_source_traceability",
+            "require_section_to_source_mapping"
+          ],
+          "properties": {
+            "require_source_traceability": {
+              "type": "boolean"
+            },
+            "require_section_to_source_mapping": {
+              "type": "boolean"
+            },
+            "mapping_style": {
+              "type": "string",
+              "enum": [
+                "inline_note",
+                "appendix_table",
+                "hidden_metadata"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "spec_documents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/specDocumentRule"
+      }
+    }
+  },
+  "$defs": {
+    "specDocumentRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_id",
+        "output_file",
+        "allowed_sources",
+        "required_sections",
+        "forbidden_topics",
+        "required_topics",
+        "generation_rules"
+      ],
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "enum": [
+            "20_user_app_spec",
+            "21_cloud_backend_spec",
+            "22_hems_controller_spec",
+            "23_firmware_spec",
+            "24_pcb_requirement_spec"
+          ]
+        },
+        "output_file": {
+          "type": "string"
+        },
+        "audience": {
+          "type": "string"
+        },
+        "allowed_sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "01_overview",
+              "02_sva_layers",
+              "03_vertical_slices",
+              "04_responsibility_boundaries",
+              "05_common_data_model",
+              "06_usecases",
+              "07_nfr_and_risks",
+              "08_open_items",
+              "09_capability_model",
+              "10_data_model",
+              "11_document_output_model"
+            ]
+          }
+        },
+        "required_sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sectionRule"
+          }
+        },
+        "required_topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forbidden_topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "generation_rules": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "must_include_open_items",
+            "must_preserve_boundary_constraints",
+            "must_not_cross_layer_responsibility",
+            "style"
+          ],
+          "properties": {
+            "must_include_open_items": {
+              "type": "boolean"
+            },
+            "must_preserve_boundary_constraints": {
+              "type": "boolean"
+            },
+            "must_not_cross_layer_responsibility": {
+              "type": "boolean"
+            },
+            "style": {
+              "type": "string",
+              "enum": [
+                "customer_facing",
+                "engineering_facing",
+                "mixed"
+              ]
+            },
+            "max_assumption_level": {
+              "type": "string",
+              "enum": [
+                "none",
+                "editorial_only",
+                "light_structural"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "sectionRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section_id",
+        "title",
+        "source_requirements"
+      ],
+      "properties": {
+        "section_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "source_requirements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceRequirement"
+          }
+        },
+        "allow_tbd": {
+          "type": "boolean"
+        },
+        "forbid_inference": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sourceRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_document",
+        "source_path",
+        "usage_rule"
+      ],
+      "properties": {
+        "source_document": {
+          "type": "string",
+          "enum": [
+            "01_overview",
+            "02_sva_layers",
+            "03_vertical_slices",
+            "04_responsibility_boundaries",
+            "05_common_data_model",
+            "06_usecases",
+            "07_nfr_and_risks",
+            "08_open_items",
+            "09_capability_model",
+            "10_data_model",
+            "11_document_output_model"
+          ]
+        },
+        "source_path": {
+          "type": "string"
+        },
+        "usage_rule": {
+          "type": "string",
+          "enum": [
+            "mandatory_extract",
+            "summarize_only",
+            "transform_to_section",
+            "open_items_only",
+            "constraint_only"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

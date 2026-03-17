@@ -1,0 +1,563 @@
+{
+  "document_info": {
+    "project_name": "i-Power Engine",
+    "version": "0.1.0",
+    "status": "draft",
+    "language": "ja",
+    "source_documents": [
+      "【Ver2.0】i-Power Engine 要件定義書＿2026.02.20.docx"
+    ],
+    "authors": [
+      "AIBOD / ChatGPT draft"
+    ],
+    "last_updated": "2026-03-17"
+  },
+  "product_overview": {
+    "vision": "メーカー非依存で太陽光発電および蓄電池の見える化・選択・制御を可能にする次世代HEMSを実現する。",
+    "purpose": [
+      "太陽光・蓄電池・買電/売電データを安定取得する",
+      "ユーザーが自らの意思でエネルギー運用方針を選択できるようにする",
+      "実測値と推定値を明確に区別して提示する",
+      "機器差異を吸収して将来の対応機種拡張を容易にする",
+      "通信断や異常時にも安全側へ縮退する"
+    ],
+    "scope": [
+      "HEMSコントローラ",
+      "クラウドバックエンド",
+      "家庭内ユーザーアプリ",
+      "管理者アプリ",
+      "太陽光発電設備",
+      "蓄電池設備",
+      "スマートメーター"
+    ],
+    "out_of_scope": [
+      "初期フェーズにおける全メーカー完全対応",
+      "管理者アプリからの直接的な遠隔制御",
+      "家庭内の全家電を対象にした包括HEMS"
+    ],
+    "user_modes": [
+      {
+        "mode_id": "mode_visualize",
+        "name": "見える化モード",
+        "description": "計測値と推定値を可視化し、ユーザーの理解を支援する。",
+        "requires_user_approval": false,
+        "automation_level": "visualization"
+      },
+      {
+        "mode_id": "mode_recommend",
+        "name": "提案モード",
+        "description": "節約優先や備え優先などの方針に応じた推奨を提示する。",
+        "requires_user_approval": true,
+        "automation_level": "recommendation"
+      },
+      {
+        "mode_id": "mode_auto",
+        "name": "自動実行モード",
+        "description": "ユーザーが事前承認した方針に基づき、自動制御を行う。",
+        "requires_user_approval": true,
+        "automation_level": "automatic_execution"
+      }
+    ]
+  },
+  "sva_layers": {
+    "L0": {
+      "title": "Purpose / Policy",
+      "intent": "家庭エネルギー主権の実装",
+      "key_elements": [
+        "ユーザー選択可能性",
+        "メーカー非依存",
+        "安全側縮退",
+        "提案主体・代行しないAI"
+      ],
+      "constraints": [
+        "AIは意思決定を代行しない",
+        "誤解を招く表示を避ける"
+      ]
+    },
+    "L1": {
+      "title": "Requirement / Schema",
+      "intent": "共通意味モデルと要求の定義",
+      "key_elements": [
+        "計測値",
+        "イベント",
+        "ユーザーモード",
+        "推定値フラグ",
+        "機器能力宣言"
+      ],
+      "constraints": [
+        "実測値と推定値を区別できること",
+        "メーカー名ではなく能力差で表現すること"
+      ]
+    },
+    "L2": {
+      "title": "Logic / AI",
+      "intent": "提案ロジックと制御ルールの定義",
+      "key_elements": [
+        "節約提案",
+        "備え優先提案",
+        "売電/自家消費バランス",
+        "異常検知・保護"
+      ],
+      "constraints": [
+        "安全制御は端末側へ依存可能な範囲を限定する",
+        "提案根拠を説明可能にする"
+      ]
+    },
+    "L3": {
+      "title": "Orchestration",
+      "intent": "Edge/Cloud/Appの責任分割と同期",
+      "key_elements": [
+        "データ同期",
+        "通知フロー",
+        "障害時縮退",
+        "承認フロー"
+      ],
+      "constraints": [
+        "通信断時も最低限の運転継続",
+        "クラウド障害で危険側に倒れない"
+      ]
+    },
+    "L4": {
+      "title": "Interface / Adapter",
+      "intent": "Wi-SUN/ECHONET Lite/メーカー差異の吸収",
+      "key_elements": [
+        "取得チャネル統一",
+        "プロパティマップ",
+        "コマンド変換",
+        "エラー標準化"
+      ],
+      "constraints": [
+        "アプリ層にメーカー固有差分を漏らさない",
+        "追加メーカーを後付けしやすくする"
+      ]
+    },
+    "L5": {
+      "title": "Execution / Physical",
+      "intent": "実機接続と物理安全実行",
+      "key_elements": [
+        "HEMS端末",
+        "PV",
+        "蓄電池",
+        "スマートメーター",
+        "家庭内通信"
+      ],
+      "constraints": [
+        "端末は安全実行主体",
+        "通信断時の保守動作を持つ"
+      ]
+    }
+  },
+  "vertical_slices": [
+    {
+      "slice_id": "vs_001",
+      "name": "見える化縦串",
+      "goal": "メーカー差異を越えて家庭エネルギー状態を一貫表示する",
+      "trigger": "定周期収集またはイベント発生",
+      "required_data": [
+        "grid_import_power",
+        "grid_export_power",
+        "pv_generation_power",
+        "battery_soc",
+        "battery_charge_discharge_power"
+      ],
+      "decision_logic": [
+        "取得ソースの正規化",
+        "欠損時の推定値生成",
+        "実測/推定の表示区分",
+        "日次・月次集計"
+      ],
+      "execution_targets": [
+        "cloud",
+        "user_app",
+        "admin_app"
+      ],
+      "ui_touchpoints": [
+        "ホームダッシュボード",
+        "時系列グラフ",
+        "計測値詳細"
+      ],
+      "fallback_behavior": "一部欠損時は推定値表示へ切替し、推定フラグを明示する",
+      "related_usecase_ids": [
+        "uc_001"
+      ]
+    },
+    {
+      "slice_id": "vs_002",
+      "name": "節約提案縦串",
+      "goal": "ユーザー方針に応じた節約・自家消費の推奨を提示する",
+      "trigger": "料金時間帯変化、発電余剰、ユーザーモード変更",
+      "required_data": [
+        "pricing_plan",
+        "pv_generation_power",
+        "battery_soc",
+        "grid_import_power",
+        "user_policy_mode"
+      ],
+      "decision_logic": [
+        "料金時間帯判定",
+        "余剰発電活用優先度判定",
+        "夜間充電の推奨判定",
+        "通知の必要性判定"
+      ],
+      "execution_targets": [
+        "cloud",
+        "user_app"
+      ],
+      "ui_touchpoints": [
+        "提案カード",
+        "節約レポート",
+        "モード設定画面"
+      ],
+      "fallback_behavior": "外部料金API異常時は直近既知の料金情報で代替し、推定扱いにする",
+      "related_usecase_ids": [
+        "uc_002"
+      ]
+    },
+    {
+      "slice_id": "vs_003",
+      "name": "備え優先縦串",
+      "goal": "停電リスク時に蓄電池残量確保を優先する",
+      "trigger": "停電警報、災害通知、ユーザーの備え優先設定",
+      "required_data": [
+        "battery_soc",
+        "outage_alert",
+        "user_policy_mode",
+        "battery_control_capability"
+      ],
+      "decision_logic": [
+        "停電リスク受信",
+        "備え優先モードへの遷移判定",
+        "放電抑制・SOC下限制御判定"
+      ],
+      "execution_targets": [
+        "cloud",
+        "edge_controller",
+        "user_app"
+      ],
+      "ui_touchpoints": [
+        "災害備え設定",
+        "緊急通知",
+        "モード状態表示"
+      ],
+      "fallback_behavior": "クラウド未接続時は端末の事前設定ルールに従い保守的に動作する",
+      "related_usecase_ids": [
+        "uc_003"
+      ]
+    },
+    {
+      "slice_id": "vs_004",
+      "name": "通信断保護縦串",
+      "goal": "通信断・機器異常時にも危険側に倒れず監視可能性を維持する",
+      "trigger": "通信断検知、機器応答異常、クラウド接続喪失",
+      "required_data": [
+        "communication_status",
+        "device_health_status",
+        "last_known_policy"
+      ],
+      "decision_logic": [
+        "異常区分判定",
+        "監視継続可能範囲の判定",
+        "安全側縮退ルール適用",
+        "復旧後の再同期"
+      ],
+      "execution_targets": [
+        "edge_controller",
+        "cloud",
+        "admin_app"
+      ],
+      "ui_touchpoints": [
+        "障害通知",
+        "運用監視画面",
+        "機器状態画面"
+      ],
+      "fallback_behavior": "端末は最後の安全設定を保持し、クラウド復旧後に差分同期する",
+      "related_usecase_ids": [
+        "uc_004"
+      ]
+    }
+  ],
+  "responsibility_boundaries": {
+    "edge_controller": {
+      "responsibilities": [
+        "機器接続維持",
+        "メーカー差異吸収",
+        "ローカルでの安全実行",
+        "通信断時の最低限動作",
+        "計測値取得と一部推定補助"
+      ],
+      "must_not_do": [
+        "重い最適化判断を常時担当しない",
+        "家庭内UIロジックを持たない"
+      ],
+      "failure_mode_behavior": [
+        "クラウド断時は保守運転へ移行する",
+        "未取得値は欠損として扱い、無理な制御を行わない"
+      ]
+    },
+    "cloud": {
+      "responsibilities": [
+        "データ蓄積",
+        "可視化用集計",
+        "提案生成",
+        "ユーザーモード管理",
+        "異常検知補助",
+        "外部API連携"
+      ],
+      "must_not_do": [
+        "通信断前提の安全制御に依存しない",
+        "メーカー固有プロトコルを直接扱わない"
+      ],
+      "failure_mode_behavior": [
+        "端末側の継続動作を前提に、復旧後に差分同期する",
+        "推奨機能停止時も可視化機能を優先維持する"
+      ]
+    },
+    "user_app": {
+      "responsibilities": [
+        "状態把握",
+        "モード設定",
+        "提案確認",
+        "承認操作",
+        "履歴参照"
+      ],
+      "must_not_do": [
+        "実機プロトコルを直接扱わない",
+        "実測と推定を混同させる表示をしない"
+      ],
+      "failure_mode_behavior": [
+        "最新同期時刻を明示する",
+        "未更新時はデータ鮮度不足を表示する"
+      ]
+    },
+    "admin_app": {
+      "responsibilities": [
+        "運用監視",
+        "接続状態把握",
+        "障害分析",
+        "サポート支援"
+      ],
+      "must_not_do": [
+        "原則として直接制御しない",
+        "ユーザーの意思決定を代替しない"
+      ],
+      "failure_mode_behavior": [
+        "障害分類ごとに優先度表示を行う",
+        "サポート向けに取得不可項目を明示する"
+      ]
+    }
+  },
+  "common_data_model": {
+    "channels": [
+      {
+        "channel_id": "ch_001",
+        "name": "wi-sun-b-route",
+        "direction": "ingress",
+        "description": "スマートメーターからの買電・売電・消費関連データ取得"
+      },
+      {
+        "channel_id": "ch_002",
+        "name": "echonet-lite",
+        "direction": "bidirectional",
+        "description": "太陽光発電・蓄電池の状態取得および制御"
+      },
+      {
+        "channel_id": "ch_003",
+        "name": "edge-internal",
+        "direction": "ingress",
+        "description": "端末内部推定値・中間計算値"
+      },
+      {
+        "channel_id": "ch_004",
+        "name": "cloud-api",
+        "direction": "bidirectional",
+        "description": "クラウドとの同期、外部料金/通知API連携"
+      },
+      {
+        "channel_id": "ch_005",
+        "name": "user-input",
+        "direction": "ingress",
+        "description": "ユーザー設定・契約料金・方針入力"
+      }
+    ],
+    "measurements": [
+      {
+        "measurement_id": "m_001",
+        "name": "grid_import_power",
+        "category": "metering",
+        "unit": "W",
+        "source_channels": [
+          "wi-sun-b-route"
+        ],
+        "is_estimation_allowed": false,
+        "estimation_flag_required": false,
+        "notes": "瞬時買電電力"
+      },
+      {
+        "measurement_id": "m_002",
+        "name": "grid_export_power",
+        "category": "metering",
+        "unit": "W",
+        "source_channels": [
+          "wi-sun-b-route"
+        ],
+        "is_estimation_allowed": false,
+        "estimation_flag_required": false,
+        "notes": "瞬時売電電力"
+      },
+      {
+        "measurement_id": "m_003",
+        "name": "pv_generation_power",
+        "category": "pv",
+        "unit": "W",
+        "source_channels": [
+          "echonet-lite"
+        ],
+        "is_estimation_allowed": true,
+        "estimation_flag_required": true,
+        "notes": "太陽光発電出力"
+      },
+      {
+        "measurement_id": "m_004",
+        "name": "battery_soc",
+        "category": "battery",
+        "unit": "%",
+        "source_channels": [
+          "echonet-lite"
+        ],
+        "is_estimation_allowed": false,
+        "estimation_flag_required": false,
+        "notes": "蓄電池残量"
+      },
+      {
+        "measurement_id": "m_005",
+        "name": "battery_charge_discharge_power",
+        "category": "battery",
+        "unit": "W",
+        "source_channels": [
+          "echonet-lite"
+        ],
+        "is_estimation_allowed": true,
+        "estimation_flag_required": true,
+        "notes": "正負で充放電を表現"
+      },
+      {
+        "measurement_id": "m_006",
+        "name": "estimated_daily_cost",
+        "category": "billing",
+        "unit": "JPY/day",
+        "source_channels": [
+          "cloud-api",
+          "user-input",
+          "edge-internal"
+        ],
+        "is_estimation_allowed": true,
+        "estimation_flag_required": true,
+        "notes": "契約プランと時系列消費から算出"
+      },
+      {
+        "measurement_id": "m_007",
+        "name": "estimated_co2_reduction",
+        "category": "environmental_value",
+        "unit": "kg-CO2/day",
+        "source_channels": [
+          "cloud-api",
+          "edge-internal"
+        ],
+        "is_estimation_allowed": true,
+        "estimation_flag_required": true,
+        "notes": "基準係数に基づく推定値"
+      },
+      {
+        "measurement_id": "m_008",
+        "name": "user_policy_mode",
+        "category": "user_setting",
+        "unit": "enum",
+        "source_channels": [
+          "user-input"
+        ],
+        "is_estimation_allowed": false,
+        "estimation_flag_required": false,
+        "notes": "見える化/提案/自動実行 など"
+      },
+      {
+        "measurement_id": "m_009",
+        "name": "communication_status",
+        "category": "derived",
+        "unit": "enum",
+        "source_channels": [
+          "edge-internal"
+        ],
+        "is_estimation_allowed": false,
+        "estimation_flag_required": false,
+        "notes": "正常/劣化/断"
+      }
+    ],
+    "events": [
+      {
+        "event_id": "e_001",
+        "name": "power_outage_detected",
+        "severity": "critical",
+        "description": "停電発生"
+      },
+      {
+        "event_id": "e_002",
+        "name": "power_restored",
+        "severity": "info",
+        "description": "停電復旧"
+      },
+      {
+        "event_id": "e_003",
+        "name": "communication_lost",
+        "severity": "warning",
+        "description": "クラウドまたは機器との通信断"
+      },
+      {
+        "event_id": "e_004",
+        "name": "device_fault_detected",
+        "severity": "critical",
+        "description": "PVまたは蓄電池の機器異常"
+      },
+      {
+        "event_id": "e_005",
+        "name": "recommendation_generated",
+        "severity": "info",
+        "description": "新しい提案が生成された"
+      }
+    ],
+    "estimated_value_rule": {
+      "flag_required": true,
+      "ui_distinction_required": true,
+      "notes": "推定値は必ずフラグを持ち、UI上で実測値と明確に区別する。"
+    }
+  },
+  "open_items": [
+    {
+      "item_id": "oi_001",
+      "title": "Echonet Lite/Bルート詳細マッピング",
+      "description": "対象メーカーごとのプロパティ対応表と取得可否を整理する。",
+      "status": "open",
+      "owner": "device-integration"
+    },
+    {
+      "item_id": "oi_002",
+      "title": "クラウドAPI詳細設計",
+      "description": "時系列API、提案API、設定APIのインターフェースを定義する。",
+      "status": "open",
+      "owner": "backend"
+    },
+    {
+      "item_id": "oi_003",
+      "title": "データ収集周期と保存粒度",
+      "description": "1秒/1分/5分粒度のどこを標準にするか決定する。",
+      "status": "open",
+      "owner": "architecture"
+    },
+    {
+      "item_id": "oi_004",
+      "title": "端末ハードウェア最小スペック",
+      "description": "CPU、メモリ、通信モジュール、OTA条件を定義する。",
+      "status": "drafting",
+      "owner": "edge"
+    }
+  ]
+}
