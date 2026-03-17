@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <style>
+      .bg { fill: #0b1020; }
+      .panel { fill: #0f1733; stroke: #22305f; stroke-width: 2; rx: 18; }
+      .card { fill: #101a3b; stroke: #2b3a78; stroke-width: 2; rx: 16; }
+      .pill { fill: #0f1733; stroke: #2b3a78; stroke-width: 2; rx: 999; }
+      .title { font: 700 34px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans JP"; fill: #eaf0ff; }
+      .h { font: 700 18px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans JP"; fill: #eaf0ff; }
+      .t { font: 500 14px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans JP"; fill: #c9d4ff; }
+      .muted { fill: #95a7df; }
+      .aibodC { fill: #00b3ec; }
+      .aibodB { fill: #0068b6; }
+      .aibodN { fill: #1d2087; }
+      .line { stroke: #6f86d6; stroke-width: 2; opacity: .7; }
+      .arrow { stroke: #00b3ec; stroke-width: 3; fill: none; }
+      .dash { stroke-dasharray: 6 6; }
+    </style>
+
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+
+    <marker id="mArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#00b3ec"/>
+    </marker>
+
+    <linearGradient id="gradA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00b3ec" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#0068b6" stop-opacity="0.10"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect class="bg" x="0" y="0" width="1400" height="900"/>
+  <rect x="40" y="40" width="1320" height="820" fill="url(#gradA)" opacity="1" rx="26"/>
+
+  <!-- Header -->
+  <text class="title" x="70" y="92">SVA: Vertical Design + Parallel Sub-Agents (Multi-Product Semiconductor Strategy)</text>
+  <text class="t muted" x="70" y="122">縦串（契約）を先に固定し、各レイヤ担当エージェントが並行に詳細設計へ進む</text>
+
+  <!-- Left: Governance / Contract -->
+  <g filter="url(#shadow)">
+    <rect class="panel" x="70" y="160" width="360" height="680" rx="22"/>
+  </g>
+  <text class="h" x="96" y="202">Vertical Governance</text>
+  <text class="t muted" x="96" y="226">（縦串の統制・ガードレール）</text>
+
+  <!-- Architect -->
+  <g filter="url(#shadow)">
+    <rect class="card" x="96" y="255" width="308" height="110" rx="18"/>
+  </g>
+  <text class="h" x="118" y="293">Vertical Architect</text>
+  <text class="t" x="118" y="318">出口産業/ユースケース → 縦串定義</text>
+  <text class="t" x="118" y="340">変更は契約（Schema）経由で制御</text>
+  <circle cx="376" cy="292" r="10" class="aibodC"/>
+
+  <!-- Schema Contract -->
+  <g filter="url(#shadow)">
+    <rect class="card" x="96" y="385" width="308" height="150" rx="18"/>
+  </g>
+  <text class="h" x="118" y="423">SVA Contract (Schema JSON)</text>
+  <text class="t" x="118" y="448">レイヤ間I/F・責務境界・前提条件</text>
+  <text class="t" x="118" y="470">Versioning / Naming / $ref / Catalog</text>
+  <text class="t" x="118" y="492">差分＝多品種の“変数”として管理</text>
+  <rect x="335" y="407" width="52" height="24" class="pill"/>
+  <text class="t" x="347" y="424">v0.1</text>
+
+  <!-- Hooks / Validation -->
+  <g filter="url(#shadow)">
+    <rect class="card" x="96" y="555" width="308" height="170" rx="18"/>
+  </g>
+  <text class="h" x="118" y="593">Hooks / Automated Checks</text>
+  <text class="t" x="118" y="618">整合性検査（schema validate / ref整合）</text>
+  <text class="t" x="118" y="640">実現性チェック（制約・コスト・性能）</text>
+  <text class="t" x="118" y="662">SPEC/README/図を自動更新</text>
+  <text class="t" x="118" y="684">失敗→差し戻し（ガードレール）</text>
+
+  <!-- Commands -->
+  <g filter="url(#shadow)">
+    <rect class="card" x="96" y="745" width="308" height="78" rx="18"/>
+  </g>
+  <text class="h" x="118" y="775">Commands</text>
+  <text class="t" x="118" y="798">/sva-plan  /schema-validate  /sva-review</text>
+
+  <!-- Main: Vertical Stack -->
+  <g filter="url(#shadow)">
+    <rect class="panel" x="470" y="160" width="860" height="680" rx="22"/>
+  </g>
+
+  <!-- Column titles -->
+  <text class="h" x="500" y="202">Vertical Stack (価値の連鎖)</text>
+  <text class="t muted" x="500" y="226">各レイヤが “契約に従って” 並行に詳細化。オーケストレータが整合の要</text>
+
+  <!-- Layer cards positions -->
+  <!-- helper: x=500, w=800, h=84, gap=22 -->
+  <!-- 1: Use Case -->
+  <g filter="url(#shadow)">
+    <rect class="card" x="500" y="255" width="800" height="84" rx="18"/>
+  </g>
+  <text class="h" x="525" y="287">0. Use Case / Exit Industry</text>
+  <text class="t" x="525" y="312">価値・市場・評価軸を固定（「今回の問い」+ KPI + 反証条件）</text>
+  <circle cx="1268" cy="284" r="10" class="aibodB"/>
+
+  <!-- 2: Application -->
+  <g filter="url(#shadow)">
+    <rect class="card" x="500" y="361" width="800" height="84" rx="18"/>
+  </g>
+  <text class="h" x="525" y="393">1. Application Layer Agent</text>
+  <text class="t" x="525" y="418">業務UI / API要件 / 体験設計（下位はschemaで抽象化）</text>
+  <rect x="1120" y="379" width="160" height="48" class="pill"/>
+  <text class="t" x="1136" y="408">agent: app-designer</text>
+
+  <!-- 3: Processing -->
+  <g filter="url(#shadow)">
+    <rect class="card" x="500" y="467" width="800" height="84" rx="18"/>
+  </g>
+  <text class="h" x="525" y="499">2. Processing / Algorithm Agent</text>
+  <text class="t" x="525" y="524">AI/最適化/制御（精度・レイテンシ・ロバスト性）</text>
+  <rect x="1105" y="485" width="175" height="48" class="pill"/>
+  <text class="t" x="1121" y="514">agent: algo-engineer</text>
+
+  <!-- 4: Orchestrator (highlight) -->
+  <g filter="url(#shadow)">
+    <rect x="500" y="573" width="800" height="104" rx="18" fill="#0f1a45" stroke="#00b3ec" stroke-width="3"/>
+  </g>
+  <text class="h" x="525" y="606">3. Orchestrator Agent (Key)</text>
+  <text class="t" x="525" y="631">状態管理 / Planning &amp; Scheduling / 再試行・フェイルセーフ / 監視</text>
+  <text class="t" x="525" y="654">＝上位要件と下位制約を“運用可能なシーケンス”に変換</text>
+  <rect x="1085" y="595" width="215" height="54" class="pill"/>
+  <text class="t" x="1101" y="626">agent: orchestrator</text>
+
+  <!-- 5: Device/Board -->
+  <g filter="url(#shadow)">
+    <rect class="card" x="500" y="699" width="800" height="84" rx="18"/>
+  </g>
+  <text class="h" x="525" y="731">4. Device / Board Agent</text>
+  <text class="t" x="525" y="756">センサ/アクチュエータ/通信/電源/安全（物理制約をschemaに反映）</text>
+  <rect x="1095" y="717" width="205" height="48" class="pill"/>
+  <text class="t" x="1111" y="746">agent: device-board</text>
+
+  <!-- 6: Chip -->
+  <g filter="url(#shadow)">
+    <rect class="card" x="500" y="805" width="800" height="84" rx="18"/>
+  </g>
+  <text class="h" x="525" y="837">5. Chip / Process Agent</text>
+  <text class="t" x="525" y="862">IP選定 / PPA / 歩留まり仮説 / コスト（多品種戦略の勝敗点）</text>
+  <rect x="1115" y="823" width="185" height="48" class="pill"/>
+  <text class="t" x="1131" y="852">agent: chip-process</text>
+
+  <!-- Vertical arrows -->
+  <path class="arrow" d="M900 343 L900 357" marker-end="url(#mArrow)"/>
+  <path class="arrow" d="M900 449 L900 463" marker-end="url(#mArrow)"/>
+  <path class="arrow" d="M900 555 L900 569" marker-end="url(#mArrow)"/>
+  <path class="arrow" d="M900 683 L900 695" marker-end="url(#mArrow)"/>
+  <path class="arrow" d="M900 787 L900 801" marker-end="url(#mArrow)"/>
+
+  <!-- Parallel design (dashed links to show contract-driven parallelism) -->
+  <line class="line dash" x1="404" y1="460" x2="500" y2="403"/>
+  <line class="line dash" x1="404" y1="460" x2="500" y2="509"/>
+  <line class="line dash" x1="404" y1="460" x2="500" y2="626"/>
+  <line class="line dash" x1="404" y1="460" x2="500" y2="741"/>
+  <line class="line dash" x1="404" y1="460" x2="500" y2="847"/>
+
+  <!-- Annotation: parallel -->
+  <g filter="url(#shadow)">
+    <rect class="pill" x="600" y="240" width="520" height="34" rx="999" fill="#0f1733" stroke="#2b3a78" stroke-width="2"/>
+  </g>
+  <text class="t" x="615" y="263">Schema contract を共有 → 各レイヤが並行に詳細化（勝手にではなく、契約準拠）</text>
+
+  <!-- Right: output artifacts -->
+  <g filter="url(#shadow)">
+    <rect class="pill" x="980" y="205" width="320" height="40" rx="999" fill="#0f1733" stroke="#2b3a78" stroke-width="2"/>
+  </g>
+  <text class="t" x="998" y="231">Outputs: Spec / BOM / Plan / Prototype</text>
+
+  <!-- Footer note -->
+  <text class="t muted" x="70" y="872">AIBOD idea: “多品種＝差分パラメータ” をSchemaで管理し、縦串の型で設計爆発を抑える</text>
+</svg>

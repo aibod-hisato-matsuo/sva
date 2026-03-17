@@ -1,0 +1,519 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aibod.example/schemas/sva-design.schema.json",
+  "title": "SVA Design Schema",
+  "description": "SVA縦串設計の原本データ",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_info",
+    "product_overview",
+    "sva_layers",
+    "vertical_slices",
+    "responsibility_boundaries",
+    "common_data_model",
+    "open_items"
+  ],
+  "properties": {
+    "document_info": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_name",
+        "version",
+        "status",
+        "language"
+      ],
+      "properties": {
+        "project_name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "approved",
+            "archived"
+          ]
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "ja",
+            "en"
+          ]
+        },
+        "source_documents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "product_overview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "vision",
+        "purpose",
+        "scope",
+        "out_of_scope"
+      ],
+      "properties": {
+        "vision": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "out_of_scope": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "user_modes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode_id",
+              "name",
+              "description"
+            ],
+            "properties": {
+              "mode_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "requires_user_approval": {
+                "type": "boolean"
+              },
+              "automation_level": {
+                "type": "string",
+                "enum": [
+                  "visualization",
+                  "recommendation",
+                  "automatic_execution"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "sva_layers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5"
+      ],
+      "properties": {
+        "L0": {
+          "$ref": "#/$defs/layerDefinition"
+        },
+        "L1": {
+          "$ref": "#/$defs/layerDefinition"
+        },
+        "L2": {
+          "$ref": "#/$defs/layerDefinition"
+        },
+        "L3": {
+          "$ref": "#/$defs/layerDefinition"
+        },
+        "L4": {
+          "$ref": "#/$defs/layerDefinition"
+        },
+        "L5": {
+          "$ref": "#/$defs/layerDefinition"
+        }
+      }
+    },
+    "vertical_slices": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slice_id",
+          "name",
+          "goal",
+          "trigger",
+          "required_data",
+          "decision_logic",
+          "execution_targets",
+          "ui_touchpoints",
+          "fallback_behavior"
+        ],
+        "properties": {
+          "slice_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "string"
+          },
+          "trigger": {
+            "type": "string"
+          },
+          "required_data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "decision_logic": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "execution_targets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ui_touchpoints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fallback_behavior": {
+            "type": "string"
+          },
+          "related_usecase_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "responsibility_boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge_controller",
+        "cloud",
+        "user_app",
+        "admin_app"
+      ],
+      "properties": {
+        "edge_controller": {
+          "$ref": "#/$defs/responsibilityGroup"
+        },
+        "cloud": {
+          "$ref": "#/$defs/responsibilityGroup"
+        },
+        "user_app": {
+          "$ref": "#/$defs/responsibilityGroup"
+        },
+        "admin_app": {
+          "$ref": "#/$defs/responsibilityGroup"
+        }
+      }
+    },
+    "common_data_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channels",
+        "measurements",
+        "events",
+        "estimated_value_rule"
+      ],
+      "properties": {
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "channel_id",
+              "name",
+              "direction",
+              "description"
+            ],
+            "properties": {
+              "channel_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string",
+                "enum": [
+                  "wi-sun-b-route",
+                  "echonet-lite",
+                  "edge-internal",
+                  "cloud-api",
+                  "user-input"
+                ]
+              },
+              "direction": {
+                "type": "string",
+                "enum": [
+                  "ingress",
+                  "egress",
+                  "bidirectional"
+                ]
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "measurements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/measurementDefinition"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/eventDefinition"
+          }
+        },
+        "estimated_value_rule": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "flag_required",
+            "ui_distinction_required"
+          ],
+          "properties": {
+            "flag_required": {
+              "type": "boolean"
+            },
+            "ui_distinction_required": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "open_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "item_id",
+          "title",
+          "status"
+        ],
+        "properties": {
+          "item_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "drafting",
+              "decided",
+              "deferred"
+            ]
+          },
+          "owner": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "layerDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "intent",
+        "key_elements"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "intent": {
+          "type": "string"
+        },
+        "key_elements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responsibilityGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "responsibilities",
+        "must_not_do"
+      ],
+      "properties": {
+        "responsibilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "must_not_do": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failure_mode_behavior": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "measurementDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "measurement_id",
+        "name",
+        "category",
+        "unit",
+        "source_channels"
+      ],
+      "properties": {
+        "measurement_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "metering",
+            "pv",
+            "battery",
+            "billing",
+            "environmental_value",
+            "user_setting",
+            "derived"
+          ]
+        },
+        "unit": {
+          "type": "string"
+        },
+        "source_channels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "wi-sun-b-route",
+              "echonet-lite",
+              "edge-internal",
+              "cloud-api",
+              "user-input"
+            ]
+          }
+        },
+        "is_estimation_allowed": {
+          "type": "boolean"
+        },
+        "estimation_flag_required": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "eventDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "name",
+        "severity"
+      ],
+      "properties": {
+        "event_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "info",
+            "warning",
+            "critical"
+          ]
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
