@@ -1,0 +1,147 @@
+{
+  "document_info": {
+    "project_name": "i-Power Engine",
+    "version": "0.1.0",
+    "status": "draft",
+    "language": "ja",
+    "last_updated": "2026-03-17"
+  },
+  "product_overview": {
+    "vision": "メーカー非依存で太陽光発電および蓄電池の見える化・選択・制御を可能にする次世代HEMSを実現する。",
+    "purpose": [
+      "太陽光・蓄電池・買電/売電データを安定取得する",
+      "ユーザーが自らの意思でエネルギー運用方針を選択できるようにする"
+    ],
+    "scope": [
+      "HEMSコントローラ",
+      "クラウドバックエンド",
+      "家庭内ユーザーアプリ",
+      "管理者アプリ"
+    ],
+    "out_of_scope": [
+      "初期フェーズにおける全メーカー完全対応"
+    ],
+    "user_modes": [
+      {
+        "mode_id": "mode_visualize",
+        "name": "見える化モード",
+        "description": "計測値を可視化する",
+        "requires_user_approval": false,
+        "automation_level": "visualization"
+      }
+    ]
+  },
+  "sva_layers": {
+    "L0": {
+      "title": "Purpose / Policy",
+      "intent": "家庭エネルギー主権の実装",
+      "key_elements": [
+        "ユーザー選択可能性"
+      ],
+      "constraints": []
+    },
+    "L1": {
+      "title": "Requirement / Schema",
+      "intent": "共通意味モデルの定義",
+      "key_elements": [
+        "計測値",
+        "イベント"
+      ],
+      "constraints": []
+    },
+    "L2": {
+      "title": "Logic / AI",
+      "intent": "提案ロジック",
+      "key_elements": [
+        "節約提案"
+      ],
+      "constraints": []
+    },
+    "L3": {
+      "title": "Orchestration",
+      "intent": "責任分割",
+      "key_elements": [
+        "同期",
+        "通知"
+      ],
+      "constraints": []
+    },
+    "L4": {
+      "title": "Interface / Adapter",
+      "intent": "差異吸収",
+      "key_elements": [
+        "ECHONET",
+        "Wi-SUN"
+      ],
+      "constraints": []
+    },
+    "L5": {
+      "title": "Execution / Physical",
+      "intent": "実機接続",
+      "key_elements": [
+        "HEMS端末",
+        "PV",
+        "Battery"
+      ],
+      "constraints": []
+    }
+  },
+  "vertical_slices": [],
+  "responsibility_boundaries": {
+    "edge_controller": {
+      "responsibilities": [
+        "機器接続維持"
+      ],
+      "must_not_do": [
+        "重い最適化を常時担当しない"
+      ],
+      "failure_mode_behavior": [
+        "通信断時は保守運転"
+      ]
+    },
+    "cloud": {
+      "responsibilities": [
+        "データ蓄積"
+      ],
+      "must_not_do": [
+        "安全制御依存"
+      ],
+      "failure_mode_behavior": [
+        "復旧後同期"
+      ]
+    },
+    "user_app": {
+      "responsibilities": [
+        "状態把握"
+      ],
+      "must_not_do": [
+        "実機プロトコルを直接扱わない"
+      ],
+      "failure_mode_behavior": [
+        "最新同期時刻を表示"
+      ]
+    },
+    "admin_app": {
+      "responsibilities": [
+        "運用監視"
+      ],
+      "must_not_do": [
+        "直接制御しない"
+      ],
+      "failure_mode_behavior": [
+        "障害分類表示"
+      ]
+    }
+  },
+  "common_data_model": {
+    "channels": [],
+    "measurements": [],
+    "events": [],
+    "estimated_value_rule": {
+      "flag_required": true,
+      "ui_distinction_required": true,
+      "notes": "推定値はUI上で明示区別する"
+    }
+  },
+  "open_items": []
+}
