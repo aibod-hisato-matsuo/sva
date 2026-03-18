@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aibod.example/schemas/pcb-parts-catalog.schema.json",
+  "title": "PCB Parts Catalog Schema",
+  "description": "HEMSコントローラのPCBブロック設計からBOM生成へ接続するための部品カタログ",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_info",
+    "part_categories",
+    "parts"
+  ],
+  "properties": {
+    "document_info": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_name",
+        "version",
+        "language"
+      ],
+      "properties": {
+        "project_name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "ja",
+            "en"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "approved",
+            "archived"
+          ]
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "part_categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category_id",
+          "name"
+        ],
+        "properties": {
+          "category_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/partDefinition"
+      }
+    }
+  },
+  "$defs": {
+    "partDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "part_id",
+        "name",
+        "category_id",
+        "block_tags",
+        "selection_status",
+        "spec_summary"
+      ],
+      "properties": {
+        "part_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category_id": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "selection_status": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "preferred",
+            "reserved",
+            "rejected"
+          ]
+        },
+        "block_tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "mcu_soc",
+              "wi_sun_module",
+              "network_module",
+              "flash_storage",
+              "ram",
+              "power_management",
+              "debug_interface",
+              "security_element",
+              "clock",
+              "connector"
+            ]
+          }
+        },
+        "spec_summary": {
+          "type": "string"
+        },
+        "interfaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "performance_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "memory_capacity": {
+          "type": "string"
+        },
+        "power_notes": {
+          "type": "string"
+        },
+        "temperature_range": {
+          "type": "string"
+        },
+        "package": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

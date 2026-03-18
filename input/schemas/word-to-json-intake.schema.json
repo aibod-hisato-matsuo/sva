@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aibod.example/schemas/word-to-json-intake.schema.json",
+  "title": "Word to JSON Intake Schema",
+  "description": "人間が作成した仕様書（Word等）から、SVA設計用のJSON instanceへ落とし込む前段の抽出結果を保持するSchema。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_meta",
+    "sections",
+    "requirement_candidates",
+    "constraint_candidates",
+    "open_item_candidates",
+    "risk_candidates",
+    "term_candidates"
+  ],
+  "properties": {
+    "document_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_title",
+        "language",
+        "source_type"
+      ],
+      "properties": {
+        "document_title": {
+          "type": "string"
+        },
+        "document_version": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "ja",
+            "en"
+          ]
+        },
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "docx",
+            "pdf",
+            "md",
+            "txt",
+            "other"
+          ]
+        },
+        "project_name": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "created_date": {
+          "type": "string"
+        },
+        "updated_date": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sectionDefinition"
+      }
+    },
+    "requirement_candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/candidateDefinition"
+      }
+    },
+    "constraint_candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/candidateDefinition"
+      }
+    },
+    "open_item_candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/candidateDefinition"
+      }
+    },
+    "risk_candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/candidateDefinition"
+      }
+    },
+    "term_candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/termDefinition"
+      }
+    }
+  },
+  "$defs": {
+    "sectionDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section_id",
+        "title"
+      ],
+      "properties": {
+        "section_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "parent_section_id": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "source_anchor": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "candidateDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "source_text",
+        "section_id"
+      ],
+      "properties": {
+        "candidate_id": {
+          "type": "string"
+        },
+        "candidate_type": {
+          "type": "string",
+          "enum": [
+            "requirement",
+            "constraint",
+            "open_item",
+            "risk"
+          ]
+        },
+        "source_text": {
+          "type": "string"
+        },
+        "normalized_text": {
+          "type": "string"
+        },
+        "section_id": {
+          "type": "string"
+        },
+        "source_anchor": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "importance": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unknown"
+          ]
+        },
+        "needs_review": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "termDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "term_id",
+        "term",
+        "section_id"
+      ],
+      "properties": {
+        "term_id": {
+          "type": "string"
+        },
+        "term": {
+          "type": "string"
+        },
+        "definition_candidate": {
+          "type": "string"
+        },
+        "section_id": {
+          "type": "string"
+        },
+        "source_anchor": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "normalized_term": {
+          "type": "string"
+        },
+        "needs_review": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aibod.example/schemas/hardware-generation-guardrail.schema.json",
+  "title": "Hardware Generation Guardrail Schema",
+  "description": "24_pcb_requirement_spec 以降の block design / parts catalog mapping / draft BOM / parts scoring を安全に自動生成するためのガードレール",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_info",
+    "global_rules",
+    "hardware_documents"
+  ],
+  "properties": {
+    "document_info": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_name",
+        "version",
+        "language"
+      ],
+      "properties": {
+        "project_name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "ja",
+            "en"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "approved",
+            "archived"
+          ]
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "global_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_source_documents",
+        "inference_policy",
+        "tbd_policy",
+        "review_policy",
+        "traceability_policy"
+      ],
+      "properties": {
+        "allowed_source_documents": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "22_hems_controller_spec",
+              "23_firmware_spec",
+              "24_pcb_requirement_spec",
+              "communication_profile",
+              "performance_budget",
+              "pcb_parts_catalog",
+              "parts_selection_scoring"
+            ]
+          }
+        },
+        "inference_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "allow_block_name_normalization",
+            "allow_required_optional_classification",
+            "allow_catalog_mapping_from_block_tags",
+            "forbid_part_number_invention",
+            "forbid_capacity_fixing_without_source",
+            "forbid_certification_claim_without_source",
+            "forbid_price_invention",
+            "forbid_inventory_invention",
+            "forbid_passive_parts_full_auto_expansion"
+          ],
+          "properties": {
+            "allow_block_name_normalization": {
+              "type": "boolean"
+            },
+            "allow_required_optional_classification": {
+              "type": "boolean"
+            },
+            "allow_catalog_mapping_from_block_tags": {
+              "type": "boolean"
+            },
+            "forbid_part_number_invention": {
+              "type": "boolean"
+            },
+            "forbid_capacity_fixing_without_source": {
+              "type": "boolean"
+            },
+            "forbid_certification_claim_without_source": {
+              "type": "boolean"
+            },
+            "forbid_price_invention": {
+              "type": "boolean"
+            },
+            "forbid_inventory_invention": {
+              "type": "boolean"
+            },
+            "forbid_passive_parts_full_auto_expansion": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "tbd_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "use_tbd_marker_for_missing_information",
+            "unknown_score_allowed",
+            "do_not_guess_missing_values"
+          ],
+          "properties": {
+            "use_tbd_marker_for_missing_information": {
+              "type": "boolean"
+            },
+            "unknown_score_allowed": {
+              "type": "boolean"
+            },
+            "do_not_guess_missing_values": {
+              "type": "boolean"
+            },
+            "tbd_marker": {
+              "type": "string"
+            }
+          }
+        },
+        "review_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "require_human_review_before_final_selection",
+            "review_required_for_part_selection",
+            "review_required_for_capacity_fixing",
+            "review_required_for_certification_judgement"
+          ],
+          "properties": {
+            "require_human_review_before_final_selection": {
+              "type": "boolean"
+            },
+            "review_required_for_part_selection": {
+              "type": "boolean"
+            },
+            "review_required_for_capacity_fixing": {
+              "type": "boolean"
+            },
+            "review_required_for_certification_judgement": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "traceability_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "require_source_traceability",
+            "require_selection_basis",
+            "require_score_basis_notes"
+          ],
+          "properties": {
+            "require_source_traceability": {
+              "type": "boolean"
+            },
+            "require_selection_basis": {
+              "type": "boolean"
+            },
+            "require_score_basis_notes": {
+              "type": "boolean"
+            },
+            "mapping_style": {
+              "type": "string",
+              "enum": [
+                "appendix_table",
+                "inline_note",
+                "hidden_metadata"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "hardware_documents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hardwareDocumentRule"
+      }
+    }
+  },
+  "$defs": {
+    "hardwareDocumentRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_id",
+        "output_file",
+        "allowed_sources",
+        "required_sections",
+        "required_topics",
+        "forbidden_topics",
+        "generation_rules"
+      ],
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "enum": [
+            "25_pcb_block_design",
+            "26_parts_catalog_mapping",
+            "27_draft_bom",
+            "28_parts_scoring"
+          ]
+        },
+        "output_file": {
+          "type": "string"
+        },
+        "audience": {
+          "type": "string"
+        },
+        "allowed_sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "22_hems_controller_spec",
+              "23_firmware_spec",
+              "24_pcb_requirement_spec",
+              "communication_profile",
+              "performance_budget",
+              "pcb_parts_catalog",
+              "parts_selection_scoring"
+            ]
+          }
+        },
+        "required_sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sectionRule"
+          }
+        },
+        "required_topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forbidden_topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "generation_rules": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "must_include_tbd_items",
+            "must_preserve_candidate_vs_selected_distinction",
+            "must_not_finalize_without_review",
+            "style"
+          ],
+          "properties": {
+            "must_include_tbd_items": {
+              "type": "boolean"
+            },
+            "must_preserve_candidate_vs_selected_distinction": {
+              "type": "boolean"
+            },
+            "must_not_finalize_without_review": {
+              "type": "boolean"
+            },
+            "style": {
+              "type": "string",
+              "enum": [
+                "engineering_facing",
+                "mixed"
+              ]
+            },
+            "max_assumption_level": {
+              "type": "string",
+              "enum": [
+                "none",
+                "editorial_only",
+                "light_structural"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "sectionRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section_id",
+        "title",
+        "source_requirements"
+      ],
+      "properties": {
+        "section_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "source_requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceRequirement"
+          }
+        },
+        "allow_tbd": {
+          "type": "boolean"
+        },
+        "forbid_inference": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sourceRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_document",
+        "source_path",
+        "usage_rule"
+      ],
+      "properties": {
+        "source_document": {
+          "type": "string",
+          "enum": [
+            "22_hems_controller_spec",
+            "23_firmware_spec",
+            "24_pcb_requirement_spec",
+            "communication_profile",
+            "performance_budget",
+            "pcb_parts_catalog",
+            "parts_selection_scoring"
+          ]
+        },
+        "source_path": {
+          "type": "string"
+        },
+        "usage_rule": {
+          "type": "string",
+          "enum": [
+            "mandatory_extract",
+            "summarize_only",
+            "transform_to_section",
+            "constraint_only",
+            "mapping_only",
+            "ranking_only"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aibod.example/schemas/communication-profile.schema.json",
+  "title": "Communication Profile Schema",
+  "description": "系の入力通信・内部通信・出力通信を定義するSchema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_info",
+    "channels"
+  ],
+  "properties": {
+    "document_info": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_name",
+        "version",
+        "language"
+      ],
+      "properties": {
+        "project_name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "ja",
+            "en"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "approved",
+            "archived"
+          ]
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "channels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/channelDefinition"
+      }
+    }
+  },
+  "$defs": {
+    "channelDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel_id",
+        "name",
+        "boundary_type",
+        "source",
+        "destination",
+        "protocol",
+        "communication_pattern",
+        "expected_update_cycle"
+      ],
+      "properties": {
+        "channel_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "boundary_type": {
+          "type": "string",
+          "enum": [
+            "external_input",
+            "internal",
+            "external_output"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "protocol": {
+          "type": "string"
+        },
+        "communication_pattern": {
+          "type": "string",
+          "enum": [
+            "poll",
+            "push",
+            "request_response",
+            "batch_sync",
+            "mixed"
+          ]
+        },
+        "expected_update_cycle": {
+          "type": "string"
+        },
+        "max_payload_size_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reliability_level": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unstable"
+          ]
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retry_policy": {
+          "type": "string"
+        },
+        "buffering_policy": {
+          "type": "string"
+        },
+        "security_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
